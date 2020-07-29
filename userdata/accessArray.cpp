@@ -58,14 +58,14 @@ static int newArray(lua_State* L)
     return 1;  /* new userdata is already on the stack */
 }
 
-static int setArray(lua_State* L)
+int setArray(lua_State* L)
 {
     double newvalue = luaL_checknumber(L, 3);
     *getElement(L) = newvalue;
     return 0;
 }
 
-static int getArray(lua_State* L)
+int getArray(lua_State* L)
 {
     auto v = getElement(L);
     lua_pushnumber(L, *v);
@@ -73,14 +73,14 @@ static int getArray(lua_State* L)
 }
 
 
-static int getSize(lua_State* L) {
+int getSize(lua_State* L) {
     /*   NumArray* a = (NumArray*)lua_touserdata(L, 1);
        luaL_argcheck(L, a != NULL, 1, "`array' expected");*/
     BitArray* a = checkArray(L);
     lua_pushnumber(L, a->size);
     return 1;
 }
-static int array2String(lua_State* L)
+int array2String(lua_State* L)
 {
     BitArray* a = checkArray(L);
     lua_pushfstring(L, "array(%d)", a->size);
@@ -90,9 +90,9 @@ static int array2String(lua_State* L)
 // lual_reg --> luaL_Reg  注册在lua中的函数名字，对应C的函数
 static const struct luaL_Reg arraylib_m[] = {
 {"__tostring", array2String},
-{"set", setArray},
-{"get", getArray},
-{"size", getSize},
+{"__newindex", setArray},
+{"__index", getArray},
+{"__len", getSize},
 {NULL, NULL},
 };
 
@@ -116,15 +116,14 @@ static int luaOpen_Array(lua_State* L)
     return 1;
 }
 
-//int main()
-//{
-//    auto luaEnv = luaL_newstate();
-//    luaL_openlibs(luaEnv);
-//    //luaOpen_Array(luaEnv);
-//    luaL_requiref(luaEnv, "array", luaOpen_Array, 1);
-//    int ret = luaL_dofile(luaEnv, "metatable.lua");
-//
-//    if (ret) return -1;
-//    return 0;
-//}
-//
+int main()
+{
+    auto luaEnv = luaL_newstate();
+    luaL_openlibs(luaEnv);
+    //luaOpen_Array(luaEnv);
+    luaL_requiref(luaEnv, "array", luaOpen_Array, 1);
+    int ret = luaL_dofile(luaEnv, "accessArray.lua");
+
+    if (ret) return -1;
+    return 0;
+}

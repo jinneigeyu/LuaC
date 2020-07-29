@@ -1,10 +1,10 @@
-
-a = array.new(10)
-print(a)
-print('size :',array.size(a))
+a = array.new(1000)
 for i = 1, 1000 do
-    array.set(a, i, 1 / i)
-    print(array.get(a,i))
+    array.set(a, i, i) 
 end
+array.set(a, 10,0)
+print(array.get(a, 10)) 
+print(array.get(a, 11)) 
+print(array.size(a)) 
 
 
